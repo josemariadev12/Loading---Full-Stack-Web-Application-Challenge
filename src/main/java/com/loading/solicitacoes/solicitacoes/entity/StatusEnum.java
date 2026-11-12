@@ -1,4 +1,4 @@
-package com.loading.solicitacoes.solicitações;
+package com.loading.solicitacoes.solicitacoes.entity;
 
 public enum StatusEnum {
     ABERTA,

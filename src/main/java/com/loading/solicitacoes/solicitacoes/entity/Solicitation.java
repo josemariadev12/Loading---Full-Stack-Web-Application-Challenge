@@ -1,4 +1,4 @@
-package com.loading.solicitacoes.solicitações;
+package com.loading.solicitacoes.solicitacoes.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.UUID;
+
 @Entity
 @Table(name = "Solicitacao")
 @NoArgsConstructor
@@ -16,8 +18,8 @@ import lombok.Setter;
 @Getter
 public class Solicitation {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long solicitationId;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID solicitationId;
 
     @NotBlank @NotEmpty
     private String title;
