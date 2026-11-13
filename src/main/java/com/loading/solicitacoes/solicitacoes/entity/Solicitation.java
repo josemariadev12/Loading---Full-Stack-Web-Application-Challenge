@@ -20,13 +20,14 @@ public class Solicitation {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID solicitationId;
-
+    @Version
+    private Long version;
     @NotBlank @NotEmpty
     private String title;
     @NotBlank @NotEmpty
     private String description;
 
-    @Enumerated(EnumType.STRING) @Version
+    @Enumerated(EnumType.STRING)
     private StatusEnum status;
 
     @NotEmpty @NotBlank
