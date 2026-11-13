@@ -3,6 +3,7 @@ package com.loading.solicitacoes.solicitacoes.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,17 +23,17 @@ public class Solicitation {
     private UUID solicitationId;
     @Version
     private Long version;
-    @NotBlank @NotEmpty
+    @NotBlank @Column(nullable = false)
     private String title;
-    @NotBlank @NotEmpty
+    @NotBlank @Column(nullable = false)
     private String description;
 
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.STRING) @NotNull
     private StatusEnum status;
 
-    @NotEmpty @NotBlank
+    @NotBlank @Column(nullable = false)
     private String category;
 
-    @Enumerated(EnumType.STRING) @NotEmpty @NotBlank
+    @Enumerated(EnumType.STRING) @NotNull
     private PriorityEnum priority;
 }

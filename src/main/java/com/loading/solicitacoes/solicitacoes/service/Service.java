@@ -7,14 +7,14 @@ import com.loading.solicitacoes.solicitacoes.entity.StatusEnum;
 import com.loading.solicitacoes.solicitacoes.entity.dto.SolicitationRequestDTO;
 import com.loading.solicitacoes.solicitacoes.entity.dto.SolicitationResponseDTO;
 import com.loading.solicitacoes.solicitacoes.repository.Repository;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.stream.Stream;
 
 
 @org.springframework.stereotype.Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class Service {
 
     private final Repository repository;
