@@ -27,8 +27,9 @@ public class Controller {
     }
 
     @PostMapping("/registrar")
-    public ResponseEntity<SolicitationResponseDTO> criar(@Valid @RequestBody SolicitationRequestDTO dto){
-        return ResponseEntity.ok(service.registerSolicitation(dto));
+    public ResponseEntity<String> criar(@Valid @RequestBody SolicitationRequestDTO dto){
+        service.registerSolicitation(dto);
+        return ResponseEntity.ok("Solicitação registrada com sucesso!");
     }
 
     //FIXED: COMPONENT @VALID ON ENTITYS AND DTOS
@@ -41,15 +42,15 @@ public class Controller {
     }
 
     @PostMapping("/aceitar")
-    public ResponseEntity aceitarSolicitacao(@RequestBody SolicitationResponseDTO dto){
+    public ResponseEntity<String> aceitarSolicitacao(@RequestBody SolicitationResponseDTO dto){
         service.aceitarSolicitation(dto);
-        return ResponseEntity.ok().body("Solicitação aceita!");
+        return ResponseEntity.ok("Solicitação aceita!");
     }
 
     @PostMapping("/concluir")
-    public ResponseEntity concluirSolicitacao( @RequestBody SolicitationResponseDTO dto){
+    public ResponseEntity<String> concluirSolicitacao( @RequestBody SolicitationResponseDTO dto){
         service.concluirSolicitation(dto);
-        return ResponseEntity.ok().body("Solicitação concluida com sucesso!");
+        return ResponseEntity.ok("Solicitação concluida com sucesso!");
     }
 
 

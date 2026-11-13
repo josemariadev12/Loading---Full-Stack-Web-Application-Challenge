@@ -1,0 +1,9 @@
+POST http://localhost:8080/loading/central-solicitacoes/registrar
+Content-Type: application/json
+
+{
+    "title": "dedeafefafae",
+    "description": "dedadaeaaeadas",
+    "category": "Infra",
+    "priority": "BAIXA"
+  }
