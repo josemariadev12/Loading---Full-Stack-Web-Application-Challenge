@@ -20,7 +20,7 @@ public class Service {
     private final Repository repository;
 
 
-    //Transforma uma Requisiçao em Entitade de Solicitação / Transform Request to Entity
+    //Transforma uma Requisiçao em Entitade de Solicitação / Transform Request -> Entity
     public Solicitation toEntity(SolicitationRequestDTO dto){
         var solicitation = new Solicitation();
 
@@ -35,7 +35,7 @@ public class Service {
 
     }
 
-    //Transformando uma Solicitação em DTO
+    //Transformando uma Solicitação em DTO / Entity -> DTO
     public SolicitationResponseDTO toDTO(Solicitation sol){
         return new SolicitationResponseDTO(sol.getSolicitationId(),sol.getTitle(),sol.getDescription(),sol.getStatus(),sol.getCategory(),sol.getPriority());
 
@@ -58,6 +58,7 @@ public class Service {
 
 
     //Lista todas as solicitações feitas
+    //Lista all done solicitations
     public List<SolicitationResponseDTO> consultarSolicitations(){
 
         List<SolicitationResponseDTO> solicitate = repository.findAll().stream().map(solicitation -> toDTO(solicitation)).toList();
@@ -65,20 +66,55 @@ public class Service {
     }
 
     //Lista todas as solicitações filtradas em status e prioridades
+    //List all filter solicitations by status and priority
     public List<SolicitationResponseDTO> filtroSolicitation(StatusEnum status , PriorityEnum priority){
 
 
         Stream<Solicitation> solicitations = repository.findAll().stream(); //percorre todo o repository
 
-        //verifica se nenhuma dos filtros são nulos
+        //verifica se nenhuma dos filtros são nulos / verify if both are nulls
         if(status != null) solicitations =solicitations.filter(solicitation -> solicitation.getStatus() == status);
         if( priority != null) solicitations = solicitations.filter(solicitation -> solicitation.getPriority() == priority);
 
         return solicitations.map(this::toDTO).toList();
     }
 
+
+    //REGRAS DE NEGOCIO / BUSINESS RULES
     //fazer RF04 — Regra de negócio: Controlar o fluxo Aberta → Em andamento → Concluída. Não permitir
     //saltar etapas diretamente
 
+    public boolean aceitarSolicitation(SolicitationResponseDTO dto){
+        //verifica se a solicitação existe no banco de dados / verify if solitation exists on data base
+        var solicitate = repository.findById(dto.solicitationId())
+                .orElseThrow( () -> new IllegalArgumentException("Solicitação não existe"));
+
+        //verifica se possui status aberta
+        //verify if has OPENED status
+        if(solicitate.getStatus()==StatusEnum.ABERTA){
+
+            solicitate.setStatus(StatusEnum.EM_ANDAMENTO);
+            repository.save(solicitate);
+            return true;
+
+        }else throw new IllegalArgumentException("Error na solicitação");
+    }
+
+    public boolean concluirSolicitation(SolicitationResponseDTO dto){
+
+        //verifica se a solicitação existe no banco de dados / verify if solicitation exists on data base
+        var solicitate = repository.findById(dto.solicitationId())
+                .orElseThrow( () -> new IllegalArgumentException("Solicitação não existe"));
+
+        //verifica se solicitação está em andamento
+        //verify if solicitate is pendent
+        if(solicitate.getStatus()==StatusEnum.EM_ANDAMENTO){
+
+            solicitate.setStatus(StatusEnum.CONCLUIDA);
+            repository.save(solicitate);
+            return true;
+
+        }else throw new IllegalArgumentException("Error ao concluir");
+    }
 
 }

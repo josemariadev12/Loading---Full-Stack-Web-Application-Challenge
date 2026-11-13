@@ -26,10 +26,12 @@ public class Solicitation {
     @NotBlank @NotEmpty
     private String description;
 
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.STRING) @Version
     private StatusEnum status;
+
+    @NotEmpty @NotBlank
     private String category;
 
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.STRING) @NotEmpty @NotBlank
     private PriorityEnum priority;
 }
