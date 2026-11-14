@@ -7,8 +7,10 @@ import com.loading.solicitacoes.solicitacoes.entity.StatusEnum;
 import com.loading.solicitacoes.solicitacoes.entity.dto.SolicitationRequestDTO;
 import com.loading.solicitacoes.solicitacoes.entity.dto.SolicitationResponseDTO;
 import com.loading.solicitacoes.solicitacoes.repository.Repository;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -37,7 +39,7 @@ public class Service {
 
     //Transformando uma Solicitação em DTO / Entity -> DTO
     public SolicitationResponseDTO toDTO(Solicitation sol){
-        return new SolicitationResponseDTO(sol.getSolicitationId(),sol.getTitle(),sol.getDescription(),sol.getStatus(),sol.getCategory(),sol.getPriority());
+        return new SolicitationResponseDTO(sol.getSolicitationId(),sol.getTitle(),sol.getDescription(),sol.getStatus(),sol.getCategory(),sol.getPriority(),sol.getStartedAt(),sol.getCompletedAt());
 
     }
 
@@ -94,6 +96,7 @@ public class Service {
         if(solicitate.getStatus()==StatusEnum.ABERTA){
 
             solicitate.setStatus(StatusEnum.EM_ANDAMENTO);
+            solicitate.setStartedAt(Instant.now());
             repository.save(solicitate);
             return true;
 
@@ -111,6 +114,7 @@ public class Service {
         if(solicitate.getStatus()==StatusEnum.EM_ANDAMENTO){
 
             solicitate.setStatus(StatusEnum.CONCLUIDA);
+            solicitate.setCompletedAt(Instant.now());
             repository.save(solicitate);
             return true;
 

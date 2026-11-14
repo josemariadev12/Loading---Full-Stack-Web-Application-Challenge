@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.Instant;
 import java.util.UUID;
 
 @Entity
@@ -21,8 +22,13 @@ public class Solicitation {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID solicitationId;
+
     @Version
-    private Long version;
+    private Long version; //evitar que a mesma pessoa pegue a mesma solicitação (não necessitada no momento);
+
+    private Instant startedAt; //log historico
+    private Instant completedAt;
+
     @NotBlank @Column(nullable = false)
     private String title;
     @NotBlank @Column(nullable = false)
@@ -31,8 +37,8 @@ public class Solicitation {
     @Enumerated(EnumType.STRING) @NotNull
     private StatusEnum status;
 
-    @NotBlank @Column(nullable = false)
-    private String category;
+    @Enumerated(EnumType.STRING) @NotNull
+    private CategoryEnum category;
 
     @Enumerated(EnumType.STRING) @NotNull
     private PriorityEnum priority;
