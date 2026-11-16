@@ -94,7 +94,7 @@ O prefixo de todas as rotas é `/loading/central-solicitacoes`.
 {
   "title": "Manutenção de equipamento",
   "description": "Projetor da sala 12 não liga",
-  "category": "Infraestrutura",
+  "category": "INFRAESTRUTURA_TI",
   "priority": "ALTA"
 }
 ```
@@ -114,8 +114,10 @@ A resposta é uma lista de solicitações no formato:
     "title": "Manutenção de equipamento",
     "description": "Projetor da sala 12 não liga",
     "status": "ABERTA",
-    "category": "Infraestrutura",
-    "priority": "ALTA"
+    "category": "INFRAESTRUTURA_TI",
+    "priority": "ALTA",
+    "startedAt": null,
+    "completedAt": null
   }
 ]
 ```
@@ -128,6 +130,8 @@ Os parâmetros `status` e `priority` correspondem aos enums da API:
 
 - `status`: `ABERTA`, `EM_ANDAMENTO` ou `CONCLUIDA`
 - `priority`: `BAIXA`, `MEDIA` ou `ALTA`
+
+As categorias aceitas são `INFRAESTRUTURA_TI`, `RH`, `VENDAS`, `MARKETING` e `GERAL`.
 
 ### Aceitar e concluir
 
@@ -142,6 +146,10 @@ As duas operações recebem um JSON com o identificador da solicitação. A tran
   "solicitationId": "7b7e1f77-8f13-4f52-a4e9-1d31b6c5e1af"
 }
 ```
+
+### Campos de acompanhamento
+
+`startedAt` e `completedAt` são campos retornados pela API no formato ISO-8601 (UTC), por exemplo `2026-11-16T14:25:30Z`. Ambos começam como `null`. `startedAt` é preenchido quando a solicitação é aceita e passa para `EM_ANDAMENTO`; `completedAt` é preenchido quando ela é concluída e passa para `CONCLUIDA`. Esses campos são gerados pelo backend e não fazem parte do corpo de criação.
 
 ### Erros
 
@@ -160,6 +168,14 @@ Erros de validação e violações das regras de negócio retornam HTTP `400 Bad
 
 O arquivo `requests.http` na raiz do backend contém uma requisição de exemplo para registrar uma solicitação, compatível com clientes HTTP de IDEs como IntelliJ IDEA.
 
+## Uso de inteligência artificial
+
+Foi utilizada IA generativa (Codex) como apoio na criação do frontend. Com essa ajuda, foram gerados a interface React em `frontend/src/App.tsx`, os estilos em `frontend/src/styles.css` e o cliente HTTP em `frontend/src/api.ts`.
+
+A assistência também foi usada para integrar a interface ao contrato existente da API: cadastro e listagem de solicitações, filtros por status e prioridade, ações de aceitar e concluir, mapeamento dos valores de categoria para rótulos visíveis e apresentação dos timestamps `startedAt` e `completedAt`. O backend foi desenvolvido e evoluído separadamente; a IA também foi consultada durante a análise e correção de alguns problemas, conforme descrito no histórico do projeto.
+
 ## 👤 Autor
 
 José Maria
+
+

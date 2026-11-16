@@ -62,8 +62,6 @@ public class Service {
     //Lista todas as solicitações feitas
     //Lista all done solicitations
     public List<SolicitationResponseDTO> consultarSolicitations(){
-
-        List<SolicitationResponseDTO> solicitate = repository.findAll().stream().map(solicitation -> toDTO(solicitation)).toList();
         return repository.findAll().stream().map( this :: toDTO).toList();
     }
 
