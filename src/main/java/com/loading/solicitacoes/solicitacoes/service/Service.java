@@ -1,13 +1,14 @@
 package com.loading.solicitacoes.solicitacoes.service;
 
 
+import com.loading.solicitacoes.shared.exception.SolicitationDuplicateException;
+import com.loading.solicitacoes.shared.exception.SolicitationNotExists;
 import com.loading.solicitacoes.solicitacoes.entity.PriorityEnum;
 import com.loading.solicitacoes.solicitacoes.entity.Solicitation;
 import com.loading.solicitacoes.solicitacoes.entity.StatusEnum;
 import com.loading.solicitacoes.solicitacoes.entity.dto.SolicitationRequestDTO;
 import com.loading.solicitacoes.solicitacoes.entity.dto.SolicitationResponseDTO;
 import com.loading.solicitacoes.solicitacoes.repository.Repository;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 
 import java.time.Instant;
@@ -52,7 +53,7 @@ public class Service {
 
             return toDTO(solicitate);
 
-        }else throw new IllegalArgumentException("Solicitação já existe");
+        }else throw new SolicitationDuplicateException();
     }
 
     //o retorno de um ResponseEntity http 200 (OK) deve satisfazer a condição e reduzir numero de duplicatas
@@ -87,7 +88,7 @@ public class Service {
     public boolean aceitarSolicitation(SolicitationResponseDTO dto){
         //verifica se a solicitação existe no banco de dados / verify if solitation exists on data base
         var solicitate = repository.findById(dto.solicitationId())
-                .orElseThrow( () -> new IllegalArgumentException("Solicitação não existe"));
+                .orElseThrow( () -> new SolicitationNotExists());
 
         //verifica se possui status aberta
         //verify if has OPENED status
@@ -105,7 +106,7 @@ public class Service {
 
         //verifica se a solicitação existe no banco de dados / verify if solicitation exists on data base
         var solicitate = repository.findById(dto.solicitationId())
-                .orElseThrow( () -> new IllegalArgumentException("Solicitação não existe"));
+                .orElseThrow( () -> new SolicitationNotExists());
 
         //verifica se solicitação está em andamento
         //verify if solicitate is pendent

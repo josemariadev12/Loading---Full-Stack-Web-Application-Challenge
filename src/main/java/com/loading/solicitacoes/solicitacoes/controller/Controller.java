@@ -36,6 +36,7 @@ public class Controller {
     public ResponseEntity<String> criar(@Valid @RequestBody SolicitationRequestDTO dto){
         service.registerSolicitation(dto);
         return ResponseEntity.ok("Solicitação registrada com sucesso!");
+        //Correct way: only return 201 CREATED.
     }
 
     //FIXED: COMPONENT @VALID ON ENTITYS AND DTOS
