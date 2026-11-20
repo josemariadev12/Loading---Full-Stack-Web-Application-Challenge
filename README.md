@@ -37,8 +37,9 @@ src/main/java/com/loading/solicitacoes/
 │   ├── repository/       # Persistência JPA
 │   └── entity/
 │       ├── dto/          # DTOs de entrada e saída
-│       └──               # Entidade e enums
-└── shared/exception/     # Tratamento global de erros
+│       ├── Solicitation  # Entidade JPA
+│       └── *Enum         # Status, categoria e prioridade
+└── shared/exception/     # Exceções de domínio e tratamento global
 ```
 
 ## Tecnologias usadas:
@@ -74,6 +75,8 @@ mvnw.cmd spring-boot:run
 
 Por padrão, a API fica disponível em `http://localhost:8080`. O Hibernate está configurado com `ddl-auto=update`, criando ou atualizando as tabelas conforme as entidades.
 
+O CORS do controller permite chamadas da origem `http://localhost:5173` para métodos `GET` e `POST`.
+
 ## API Endpoints
 
 O prefixo de todas as rotas é `/loading/central-solicitacoes`.
@@ -99,7 +102,7 @@ O prefixo de todas as rotas é `/loading/central-solicitacoes`.
 }
 ```
 
-Os campos textuais são obrigatórios e não podem estar em branco. `priority` aceita `BAIXA`, `MEDIA` ou `ALTA`. O status inicial é definido pelo backend como `ABERTA`. Uma solicitação com título e descrição já cadastrados é rejeitada.
+`title` e `description` são obrigatórios e não podem estar em branco. `category` e `priority` são obrigatórios e devem corresponder aos enums abaixo. O status inicial é definido pelo backend como `ABERTA`. Uma solicitação com título e descrição já cadastrados é rejeitada com HTTP `409 Conflict`. Em caso de sucesso, o endpoint retorna HTTP `200 OK` com uma mensagem de confirmação.
 
 ### Consultar solicitações
 
@@ -131,7 +134,7 @@ Os parâmetros `status` e `priority` correspondem aos enums da API:
 - `status`: `ABERTA`, `EM_ANDAMENTO` ou `CONCLUIDA`
 - `priority`: `BAIXA`, `MEDIA` ou `ALTA`
 
-As categorias aceitas são `INFRAESTRUTURA_TI`, `RH`, `VENDAS`, `MARKETING` e `GERAL`.
+As categorias aceitas no cadastro e retornadas pela API são `INFRAESTRUTURA_TI`, `RH`, `VENDAS`, `MARKETING` e `GERAL`. Os dois parâmetros de filtro são obrigatórios.
 
 ### Aceitar e concluir
 
@@ -147,18 +150,20 @@ As duas operações recebem um JSON com o identificador da solicitação. A tran
 }
 ```
 
+O corpo pode conter apenas `solicitationId`; os demais campos do DTO de resposta não são usados nessas ações. As ações retornam HTTP `200 OK` com uma mensagem de confirmação. IDs inexistentes resultam em HTTP `404 Not Found`; tentativas de transição inválidas resultam em HTTP `400 Bad Request`.
+
 ### Campos de acompanhamento
 
 `startedAt` e `completedAt` são campos retornados pela API no formato ISO-8601 (UTC), por exemplo `2026-11-16T14:25:30Z`. Ambos começam como `null`. `startedAt` é preenchido quando a solicitação é aceita e passa para `EM_ANDAMENTO`; `completedAt` é preenchido quando ela é concluída e passa para `CONCLUIDA`. Esses campos são gerados pelo backend e não fazem parte do corpo de criação.
 
 ### Erros
 
-Erros de validação e violações das regras de negócio retornam HTTP `400 Bad Request` com um corpo no formato:
+Os erros tratados globalmente usam o formato abaixo. `status` é um código HTTP numérico. Erros de validação e transições inválidas retornam `400 Bad Request`, IDs inexistentes retornam `404 Not Found` e duplicatas retornam `409 Conflict`.
 
 ```json
 {
-  "timestamp": "2026-11-14T10:30:00",
-  "httpStatus": "BAD_REQUEST",
+  "timestamp": "2026-11-20T10:30:00",
+  "status": 400,
   "error": "Mensagem descritiva do erro",
   "path": "/loading/central-solicitacoes/registrar"
 }
