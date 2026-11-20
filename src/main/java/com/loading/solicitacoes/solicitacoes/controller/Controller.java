@@ -26,6 +26,7 @@ import java.util.List;
 public class Controller {
     private final Service service;
 
+
     @GetMapping("/consultar")
     public ResponseEntity<List<SolicitationResponseDTO>> consultar(){
         List<SolicitationResponseDTO> sol = service.consultarSolicitations();
@@ -33,14 +34,10 @@ public class Controller {
     }
 
     @PostMapping("/registrar")
-    public ResponseEntity<String> criar(@Valid @RequestBody SolicitationRequestDTO dto){
-        service.registerSolicitation(dto);
-        return ResponseEntity.ok("Solicitação registrada com sucesso!");
+    public ResponseEntity<SolicitationResponseDTO> criar(@Valid @RequestBody SolicitationRequestDTO dto){
+        return ResponseEntity.ok(service.registerSolicitation(dto));
         //Correct way: only return 201 CREATED.
     }
-
-    //FIXED: COMPONENT @VALID ON ENTITYS AND DTOS
-    //FEAT: CONTROLLER - FALTA APENAS FILTRO, ACEITAR E CONCLUIR
 
     @GetMapping("/filtros")
     public ResponseEntity<List<SolicitationResponseDTO>> filtrar(@RequestParam StatusEnum status,
